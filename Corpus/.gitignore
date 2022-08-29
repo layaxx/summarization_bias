@@ -1,0 +1,5 @@
+venv
+data/formatted
+data/test.jsonl
+log.txt
+*.svg

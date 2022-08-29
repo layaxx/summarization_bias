@@ -27,6 +27,8 @@ import random
 
 
 nltk.download('wordnet')
+nltk.download('stopwords')
+nltk.download('omw-1.4')
 
 
 # In[2]:
@@ -35,17 +37,12 @@ nltk.download('wordnet')
 stop = set(stopwords.words('english'))
 
 
-# In[4]:
-
-
-print(stop)
 
 
 # In[3]:
 
 
-topic_path = ''
-ref_path = ''
+topic_path = './data/formatted'
 
 
 # In[4]:
@@ -79,9 +76,9 @@ def line_plot(doc_importance,labels):
     plt.plot(index,importance, linestyle='solid')
     plt.xlabel('Sentence number', fontsize=5)
     plt.ylabel('Imprtance Value', fontsize=5)
-    plt.xticks(index, label, fontsize=5, rotation=30)
+    xticks(index, label, fontsize=5, rotation=30)
     plt.title('Importance throughout document')
-    plt.show()
+
 
 
 # In[7]:
@@ -212,7 +209,7 @@ def expectation(matrix):
                 val = val + matrix[i,j]
         docs.append(val)
         
-    print(docs)
+    # print(docs)
     return docs
 
 
@@ -262,9 +259,9 @@ def divergence(file,docs,ref_string):
     
     print("topic distribution by words :")
     topic_words_dist = final_lda.show_topics(num_words=10, log=False, formatted=True)
-    for i in range(len(topic_words_dist)):
-        print(topic_words_dist[i])
-    
+   # for i in range(len(topic_words_dist)):
+   #     print(topic_words_dist[i])
+
     print()
     
     lda_array = np.full((len(common_corpus),n),0.001)
@@ -275,11 +272,11 @@ def divergence(file,docs,ref_string):
             lda_array[i,col] = j[1]
             
     print("topic array :")
-    for i in range(lda_array.shape[0]):
-        if i!=lda_array.shape[0]-1:
-            print(document_ids[i],":",lda_array[i:i+1,:])
-        else:
-            print("Reference summary :",lda_array[i:i+1,:])
+    #for i in range(lda_array.shape[0]):
+    #    if i!=lda_array.shape[0]-1:
+    #        print(document_ids[i],":",lda_array[i:i+1,:])
+    #    else:
+    #        print("Reference summary :",lda_array[i:i+1,:])
     print()
 #     print(np.sum(lda_array[10:11,:]))
     
@@ -334,7 +331,6 @@ def divergence(file,docs,ref_string):
     sns.set(font_scale=1.5)
     ax = sns.heatmap(normalized_intra_topic_r,vmin=-1, vmax=0 ,cmap = "YlGnBu",annot=False,linewidth=2.5)
     plt.savefig(file[0:len(file)-4]+".svg")
-    plt.show()
     print()
 
     mx = maximum(intra_topic_d)
@@ -345,11 +341,10 @@ def divergence(file,docs,ref_string):
     print()
     print("Intra-topic divergence is :")
     ax = sns.heatmap(normalized_intra_topic_d,vmin=0, vmax=1 ,cmap = "YlGnBu",annot=True,linewidth=0.5)
-    plt.show()
     print()
     
     print("Redundancy vector is :")
-    print(redundancy_vector)
+    # print(redundancy_vector)
     print()
     redundancy_dataset.append(sum(redundancy_vector)/len(redundancy_vector))
     relevance_dataset.append(sum(perdoc_rel)/len(perdoc_rel))
@@ -363,41 +358,24 @@ def divergence(file,docs,ref_string):
 
 # In[26]:
 
-
-f = '693.txt'
-doc_file = open(topic_path + '/'+ f, 'r', encoding='utf-8')
-ref_file = open(ref_path + '/'+ f, 'r', encoding='utf-8')
-doc_string = doc_file.read()
-docs = doc_string.split("\n\n")
-ref_string = ref_file.read()
-for d in docs:
-    print("Doc :")
-    print(d)
-print(ref_string)
-# divergence(f,docs,ref_string)
-
-
-# In[ ]:
-
-
 redundancy_dataset = []
 relevance_dataset = []
 doc_files = os.listdir(topic_path)
 
-indices = random.sample(range(0,len(doc_files)),100)
-sampled_topics = []
+#indices = random.sample(range(0,len(doc_files)),100)
+#sampled_topics = []
 
-for i in indices:
-    sampled_topics.append(doc_files[i])
+#for i in indices:
+#    sampled_topics.append(doc_files[i])
 
-for f in sampled_topics:
-    doc_file = open(topic_path + '/'+ f, 'r', encoding='utf-8')
-    ref_file = open(ref_path + '/'+ f, 'r', encoding='utf-8')
+for topic in doc_files:
+    doc_file = open(topic_path + '/'+ topic + "/documents.txt", 'r', encoding='utf-8')
+    ref_file = open(topic_path + '/'+ topic + "/summary.txt", 'r', encoding='utf-8')
     doc_string = doc_file.read()
     docs = doc_string.split("\n\n")
     ref_string = ref_file.read()
-    print(f)
-    divergence(f,docs,ref_string)
+    print(topic)
+    divergence(topic,docs,ref_string)
 
 
 # In[22]:
@@ -409,30 +387,4 @@ print("Dataset relevance :",sum(relevance_dataset)/len(relevance_dataset))
 
 # In[23]:
 
-
-len(redundancy_dataset)
-
-
-# In[29]:
-
-
-for i in sampled_topics:
-    if int(i[:len(i)-4]) > 80561 :
-        print(i)
-
-
-# In[20]:
-
-
-f = '86354.txt'
-doc_file = open(topic_path + '/'+ f, 'r', encoding='utf-8')
-ref_file = open(ref_path + '/'+ f, 'r', encoding='utf-8')
-doc_string = doc_file.read()
-docs = doc_string.split("\n\n")
-ref_string = ref_file.read()
-for d in docs:
-    print("Doc :")
-    print(d)
-print(ref_string)
-divergence(f,docs,ref_string)
 

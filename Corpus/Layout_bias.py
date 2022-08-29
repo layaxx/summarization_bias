@@ -14,8 +14,7 @@ import matplotlib.pyplot as plt
 # In[3]:
 
 
-path_ref = ''
-path_doc = ''
+path_doc = './data/formatted'
 
 
 # In[4]:
@@ -51,10 +50,10 @@ def bar_plot(doc_importance):
 # In[28]:
 
 
-def cos_sim(topic,ground_truth):
-    topic_path = path_doc + '/' + topic
+def cos_sim(topic):
+    topic_path = path_doc + '/' + topic + "/documents"
     documents = os.listdir(topic_path)
-    reference_path = path_ref + '/' + ground_truth + '/' + topic + ground_truth + '.txt'
+    reference_path = path_doc + '/' + topic + '/' + 'summary.txt'
     ref_matrix = np.loadtxt(reference_path, dtype=float)
     for d in documents:
         document_path = topic_path + '/' + d
@@ -98,11 +97,6 @@ def cos_sim(topic,ground_truth):
 topics = os.listdir(path_doc)
 
 
-# In[27]:
-
-
-cos_sim('D30040','A')
-
 
 # In[29]:
 
@@ -112,7 +106,8 @@ second_prt = []
 third_prt = []
 for t in topics:
     print(t)
-    cos_sim(t,'A')
+    cos_sim(t)
+    break
 
 
 # In[30]:
