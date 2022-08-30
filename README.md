@@ -1,5 +1,14 @@
 # corporasystembias
 
+## Edits:
+This project has been adjusted for use in a project paper I am currently working on, see https://github.com/layaxx/s6_MI-Sem
+
+Adjustements were made exclusively to the Corpus Benchmark section, see `Corpus` subfolder.
+
+There, a README is included on how to use it.
+
+## Original Readme
+
 Code for the paper: Corpora Evaluation and System Bias Detection in Multi-document Summarization
 
 
