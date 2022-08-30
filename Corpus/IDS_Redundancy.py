@@ -262,14 +262,18 @@ def divergence(file, docs, ref_string):
     return (redundancy, relevance)
 
 
-def calculate_ids(topic_path):
+def calculate_ids(topic_path, limit=10, outputCSV=False):
     redundancy_dataset = []
     relevance_dataset = []
     doc_files = os.listdir(topic_path)
     random.shuffle(doc_files)
 
-    print("CompletedTopics, LastTopic, Date, Redundancy, Relevance")
+    if outputCSV:
+        print("CompletedTopics, LastTopic, Date, Redundancy, Relevance")
+    counter = 0
     for topic in doc_files:
+        if (counter >= limit): break
+        counter += 1
         doc_file = open(topic_path + '/' + topic + "/documents.txt",
                         'r',
                         encoding='utf-8')
@@ -279,16 +283,25 @@ def calculate_ids(topic_path):
         doc_string = doc_file.read()
         docs = doc_string.split("\n\n")
         ref_string = ref_file.read()
-        redundancy, relevance = divergence(topic, docs, ref_string)
-        redundancy_dataset.append(redundancy)
-        relevance_dataset.append(relevance)
-        print(str(len(redundancy_dataset)),
-              str(topic),
-              str(datetime.now()),
-              str(sum(redundancy_dataset) / len(redundancy_dataset)),
-              str(sum(relevance_dataset) / len(relevance_dataset)),
-              sep=", ")
+        try:
+            redundancy, relevance = divergence(topic, docs, ref_string)
+            redundancy_dataset.append(redundancy)
+            relevance_dataset.append(relevance)
+            if outputCSV:
+                print(str(len(redundancy_dataset)),
+                      str(topic),
+                      str(datetime.now()),
+                      str(sum(redundancy_dataset) / len(redundancy_dataset)),
+                      str(sum(relevance_dataset) / len(relevance_dataset)),
+                      sep=", ")
+        except:
+            if not outputCSV: print("## Failed to parse " + topic)
+            counter -= 1
+
+    redundancy = sum(redundancy_dataset) / len(redundancy_dataset)
+    relevance = sum(relevance_dataset) / len(relevance_dataset)
+    return (redundancy, relevance)
 
 
 if __name__ == "__main__":
-    calculate_ids("data/formatted")
+    print(calculate_ids("data/formatted"), 10, True)

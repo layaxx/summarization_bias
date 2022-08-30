@@ -4,6 +4,8 @@ const path = require("path")
 
 const prefix = process.argv[3] ?? "data/formatted"
 
+const articleNumbers = []
+
 function processLine(line) {
   const { id, articles, summary } = JSON.parse(line)
 
@@ -20,6 +22,7 @@ function processLine(line) {
       { flag: "a+" }
     )
   )
+  articleNumbers.push(articles.length)
 }
 
 try {
@@ -39,5 +42,10 @@ const readInterface = readline.createInterface({
 readInterface.on("line", processLine)
 
 readInterface.on("close", function () {
+  console.log(
+    "avg Articles per Summary",
+    articleNumbers.reduce((prev, curr) => prev + curr, 0) /
+      articleNumbers.length
+  )
   console.log("done")
 })
