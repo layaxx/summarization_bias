@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "yapf",
+  "cSpell.words": [
+    "arange",
+    "chunksize",
+    "gensim",
+    "lemmatizer",
+    "ngram",
+    "ngrams",
+    "nltk",
+    "perdoc",
+    "seaborn",
+    "stopwords",
+    "wordnet"
+  ]
+}

@@ -34,7 +34,7 @@ try {
 fs.mkdirSync(prefix)
 
 const readInterface = readline.createInterface({
-  input: fs.createReadStream("data/t.jsonl"),
+  input: fs.createReadStream("data/test.jsonl"),
   output: false,
 })
 
