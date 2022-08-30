@@ -1,6 +1,7 @@
 venv
 data/formatted
-data/test.jsonl
+*.jsonl
+!t.jsonl
 log.txt
 *.svg
 *.txt

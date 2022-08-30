@@ -2,7 +2,7 @@ const readline = require("readline")
 const fs = require("fs")
 const path = require("path")
 
-const prefix = "data/formatted"
+const prefix = process.argv[3] ?? "data/formatted"
 
 function processLine(line) {
   const { id, articles, summary } = JSON.parse(line)
@@ -12,8 +12,6 @@ function processLine(line) {
   fs.mkdirSync(path.join(prefix, String(id)))
 
   fs.writeFileSync(path.join(prefix, String(id), "summary.txt"), summary)
-
-  fs.mkdirSync(path.join(prefix, String(id), "documents"))
 
   articles.forEach(({ text }) =>
     fs.writeFileSync(
@@ -31,10 +29,10 @@ try {
   // Allowed to fail if no directory exists
 }
 
-fs.mkdirSync(prefix)
+fs.mkdirSync(prefix, { recursive: true })
 
 const readInterface = readline.createInterface({
-  input: fs.createReadStream("data/test.jsonl"),
+  input: fs.createReadStream(process.argv[2] ?? "data/t.jsonl"),
   output: false,
 })
 
