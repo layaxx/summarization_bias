@@ -5,3 +5,4 @@ log.txt
 *.svg
 *.txt
 *.csv
+__pycache__

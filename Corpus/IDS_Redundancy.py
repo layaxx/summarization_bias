@@ -20,8 +20,6 @@ nltk.download('omw-1.4')
 
 stop = set(stopwords.words('english'))
 
-topic_path = './data/formatted'
-
 regex = RegexpTokenizer(r'\w+')
 lemmatizer = WordNetLemmatizer()
 
@@ -258,35 +256,39 @@ def divergence(file, docs, ref_string):
 
     mx = maximum(intra_topic_d)
     mn = minimum(intra_topic_d)
-    redundancy_dataset.append(sum(redundancy_vector) / len(redundancy_vector))
-    relevance_dataset.append(sum(perdoc_rel) / len(perdoc_rel))
+    redundancy = sum(redundancy_vector) / len(redundancy_vector)
+    relevance = sum(perdoc_rel) / len(perdoc_rel)
+
+    return (redundancy, relevance)
 
 
-redundancy_dataset = []
-relevance_dataset = []
-doc_files = os.listdir(topic_path)
-indices = random.sample(range(0, len(doc_files)), len(doc_files))
-sampled_topics = []
+def calculate_ids(topic_path):
+    redundancy_dataset = []
+    relevance_dataset = []
+    doc_files = os.listdir(topic_path)
+    random.shuffle(doc_files)
 
-for i in indices:
-    sampled_topics.append(doc_files[i])
+    print("CompletedTopics, LastTopic, Date, Redundancy, Relevance")
+    for topic in doc_files:
+        doc_file = open(topic_path + '/' + topic + "/documents.txt",
+                        'r',
+                        encoding='utf-8')
+        ref_file = open(topic_path + '/' + topic + "/summary.txt",
+                        'r',
+                        encoding='utf-8')
+        doc_string = doc_file.read()
+        docs = doc_string.split("\n\n")
+        ref_string = ref_file.read()
+        redundancy, relevance = divergence(topic, docs, ref_string)
+        redundancy_dataset.append(redundancy)
+        relevance_dataset.append(relevance)
+        print(str(len(redundancy_dataset)),
+              str(topic),
+              str(datetime.now()),
+              str(sum(redundancy_dataset) / len(redundancy_dataset)),
+              str(sum(relevance_dataset) / len(relevance_dataset)),
+              sep=", ")
 
-print("CompletedTopics, LastTopic, Date, Redundancy, Relevance")
-for topic in doc_files:
-    doc_file = open(topic_path + '/' + topic + "/documents.txt",
-                    'r',
-                    encoding='utf-8')
-    ref_file = open(topic_path + '/' + topic + "/summary.txt",
-                    'r',
-                    encoding='utf-8')
-    doc_string = doc_file.read()
-    docs = doc_string.split("\n\n")
-    ref_string = ref_file.read()
-    divergence(topic, docs, ref_string)
-    print(
-        str(len(redundancy_dataset)) + ", " + str(topic) + ", " +
-        str(datetime.now()) + ", " +
-        str(sum(redundancy_dataset) / len(redundancy_dataset)) + ", " +
-        str(sum(relevance_dataset) / len(relevance_dataset)))
 
-print("finished")
+if __name__ == "__main__":
+    calculate_ids("data/formatted")

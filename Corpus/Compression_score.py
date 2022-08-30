@@ -2,14 +2,10 @@ import os
 from nltk import RegexpTokenizer
 from nltk.util import ngrams
 
-topic_path = 'data/formatted'
-ref_path = topic_path
-
 regex = RegexpTokenizer(r'\w+')
 
 
 def abstract(topic, summary):
-
     sentences = []
     for i in topic:
         doc_string = i
@@ -34,19 +30,28 @@ def abstract(topic, summary):
         ngram = list(ngrams(tokens, 1))
         reference_ngrams.extend(ngram)
 
-    cs.append(len(doc_ngrams) / len(reference_ngrams))
+    return len(doc_ngrams) / len(reference_ngrams)
 
 
-doc_files = os.listdir(topic_path)
-cs = []
-for f in doc_files:
-    doc_file = open(topic_path + '/' + f + "/documents.txt",
-                    'r',
-                    encoding='utf-8')
-    ref_file = open(ref_path + '/' + f + "/summary.txt", 'r', encoding='utf-8')
-    doc_string = doc_file.read()
-    docs = doc_string.split("\n\n")
-    ref_string = ref_file.read()
-    abstract(docs, ref_string)
+def calculate_compression_score(documents_path):
+    doc_files = os.listdir(documents_path)
+    cs = []
+    for file in doc_files:
+        doc_file = open(os.path.join(documents_path, file, "documents.txt"),
+                        'r',
+                        encoding='utf-8')
+        ref_file = open(os.path.join(documents_path, file, "summary.txt"),
+                        'r',
+                        encoding='utf-8')
+        doc_string = doc_file.read()
+        docs = doc_string.split("\n\n")
+        ref_string = ref_file.read()
+        cs.append(abstract(docs, ref_string))
 
-print("Compression Score is: " + str(sum(cs) / len(cs)))
+    compression_score = sum(cs) / len(cs)
+    return compression_score
+
+
+if __name__ == "__main__":
+    print("Compression Score is: " +
+          str(calculate_compression_score("data/formatted")))
