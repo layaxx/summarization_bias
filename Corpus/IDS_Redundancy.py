@@ -157,7 +157,7 @@ def expectation(matrix):
     return docs
 
 
-def divergence(file, docs, ref_string):
+def divergence(topic, docs, ref_string):
 
     documents_list = []
     document_ids = []
@@ -252,7 +252,19 @@ def divergence(file, docs, ref_string):
     mn = minimum(intra_topic_r)
     normalized_intra_topic_r = normalize_r(intra_topic_r, mn, mx)
     perdoc_rel = expectation(normalized_intra_topic_r)
+
+    mx = maximum(intra_topic_d)
+    mn = minimum(intra_topic_d)
+    normalized_intra_topic_d = normalize_d(intra_topic_d, mn, mx)
+
     sns.set(font_scale=1.5)
+    ax = sns.heatmap(normalized_intra_topic_d,
+                     vmin=0,
+                     vmax=1,
+                     cmap="YlGnBu",
+                     linewidth=0.5)
+    plt.savefig("out/" + topic + ".svg")
+    plt.clf()
 
     mx = maximum(intra_topic_d)
     mn = minimum(intra_topic_d)
@@ -295,7 +307,8 @@ def calculate_ids(topic_path, limit=10, outputCSV=False):
                       str(sum(relevance_dataset) / len(relevance_dataset)),
                       sep=", ")
         except:
-            if not outputCSV: print("## Failed to parse " + topic)
+            if not outputCSV:
+                print("## Failed to parse " + topic)
             counter -= 1
 
     redundancy = sum(redundancy_dataset) / len(redundancy_dataset)
@@ -304,4 +317,4 @@ def calculate_ids(topic_path, limit=10, outputCSV=False):
 
 
 if __name__ == "__main__":
-    print(calculate_ids("data/formatted"), 10, True)
+    print(calculate_ids("data/formatted", 3, outputCSV=True))

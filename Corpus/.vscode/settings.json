@@ -4,14 +4,19 @@
   "cSpell.words": [
     "arange",
     "chunksize",
+    "cmap",
     "gensim",
     "lemmatizer",
+    "linewidth",
     "ngram",
     "ngrams",
     "nltk",
     "perdoc",
+    "savefig",
     "seaborn",
     "stopwords",
+    "vmax",
+    "vmin",
     "wordnet"
   ]
 }

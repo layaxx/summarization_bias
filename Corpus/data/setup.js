@@ -6,22 +6,25 @@ const prefix = process.argv[3] ?? "data/formatted"
 
 const articleNumbers = []
 
+const filename = process.argv[2] ?? "data/t.jsonl"
+const datasetName = path.basename(filename).split(".").slice(0, -1).join(".")
+
 function processLine(line) {
   const { id, articles, summary } = JSON.parse(line)
 
   console.log("processing", id)
 
-  fs.mkdirSync(path.join(prefix, String(id)))
+  const dirPath = path.join(prefix, datasetName + String(id))
 
-  fs.writeFileSync(path.join(prefix, String(id), "summary.txt"), summary)
+  fs.mkdirSync(dirPath)
 
-  articles.forEach(({ text }) =>
-    fs.writeFileSync(
-      path.join(prefix, String(id), "documents.txt"),
-      text + "\n\n",
-      { flag: "a+" }
-    )
+  fs.writeFileSync(path.join(dirPath, "summary.txt"), summary)
+
+  fs.writeFileSync(
+    path.join(dirPath, "documents.txt"),
+    articles.map((article) => article.text.replace(/\n\n/g, "\n")).join("\n\n")
   )
+
   articleNumbers.push(articles.length)
 }
 
@@ -35,7 +38,7 @@ try {
 fs.mkdirSync(prefix, { recursive: true })
 
 const readInterface = readline.createInterface({
-  input: fs.createReadStream(process.argv[2] ?? "data/t.jsonl"),
+  input: fs.createReadStream(filename),
   output: false,
 })
 
